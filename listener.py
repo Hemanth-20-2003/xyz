@@ -1,18 +1,18 @@
-#!/usr/bin/env python
-
+#!/usr/bin/env python3
 import rospy
-from drone_system.msg import DroneTelemetry
+from pkg_22brs1150.srv import SetSpeed
 
-def callback(msg):
-    if msg.battery_level < 20.0 or msg.is_emergency:
-        rospy.logwarn(f"[{msg.drone_id}] Warning! Battery: {msg.battery_level}%, Emergency: {msg.is_emergency}")
-    else:
-        rospy.loginfo(f"[{msg.drone_id}] Battery OK.")
-
-def listener():
-    rospy.init_node('drone_monitor', anonymous=True)
-    rospy.Subscriber('telemetry', DroneTelemetry, callback)
-    rospy.spin()
+def set_speed_client():
+    rospy.init_node('speed_client')
+    rospy.wait_for_service('/set_speed')
+    try:
+        set_speed = rospy.ServiceProxy('/set_speed', SetSpeed)
+        linear = float(input("Enter linear velocity (m/s): "))
+        angular = float(input("Enter angular velocity (rad/s): "))
+        response = set_speed(linear, angular)
+        print(f"Response: Success={response.success}, Message='{response.message}'")
+    except rospy.ServiceException as e:
+        print(f"Service call failed: {e}")
 
 if __name__ == '__main__':
-    listener()
+    set_speed_client()
