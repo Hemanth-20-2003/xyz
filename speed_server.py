@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import rospy
-from your_package_name.srv import SetSpeed, SetSpeedResponse
+from pkg_22brs1150.srv import SetSpeed, SetSpeedResponse
 
 def handle_set_speed(req):
     rospy.loginfo(f"Received speed - Linear: {req.linear}, Angular: {req.angular}")
